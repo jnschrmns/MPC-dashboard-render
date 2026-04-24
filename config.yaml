@@ -1,0 +1,77 @@
+home_assistant:
+  url: "https://jnschrmnsha.duckdns.org:8123"
+  token: "${HA_TOKEN}"
+
+zones:
+  tinyhouse:
+    climate_entity: "climate.tinyhouse"
+    index: 0
+  woonkamer:
+    climate_entity: "climate.woonkamer"
+    index: 1
+
+sensors:
+  ambient_temp: "sensor.heat_pump_jan_ambient_temperature"
+  hp_power: "sensor.heat_pump_jan_power"
+  hp_power_scale_factor: 0.18
+  hp_mode: "select.heat_pump_jan_heat_pump_mode"
+  electricity_price: "sensor.energyzero_today_energy_current_hour_price"
+
+enable_toggle: "input_boolean.mpc_heating_control"
+
+schedule_file: "schedules.yaml"
+
+goodwe:
+  enabled: true
+  account: "jnschrmns@gmail.com"
+  password: "${GOODWE_PASSWORD}"
+  station_id: "452f533f-d3b0-4d82-b919-ffb0b8a0be79"
+  inverter_sn: "51500SST232W0383"
+  history_days: 2
+  refresh_interval_min: 60
+
+location:
+  latitude: 52.548
+  longitude: 4.669
+
+email_notifications:
+  enabled: false
+
+mpc:
+  horizon: 100
+  sample_time_min: 30
+  dry_run: false
+  max_consecutive_failures: 3
+  prediction_lead_hours: 5
+  past_display_hours: 15
+  future_display_hours: 24
+  results_retention_days: 7
+
+plotting:
+  enabled: true
+  headless: false
+  png_path: "results/mpc_plot.png"
+  show_predictions: true
+  prediction_lead_hours: 5
+
+model_params:
+  Ct_wk: 80
+  K_wk: 50
+  Ct_tiny: 200
+  K_tiny: 56
+  Kpw: 8
+  Tiwk: 300
+  Kpt: 20
+  Tit: 400
+  k_solar: 0.000375
+  k_solar_pv: 0.0015
+  aPheatunkn: -0.000111
+
+mpc_params:
+  costs_for_exceed_temp: 0.3
+  Rweight: 0.1
+  Xmin: [15.0, 15.0]
+  Xmax: [25.0, 23.0]
+  W_obs: [1.0, 1.0]
+  V_obs: [10000, 10000]
+  overwrite_state_with_measured: true
