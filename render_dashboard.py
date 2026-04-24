@@ -33,20 +33,9 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
         hp_scale_factor = 1.0
         sample_time_min_cfg = 30
 
-    # TEMPORARY: Use local files only to test if GitHub loader is causing issues
-    try:
-        # Initialize GitHub MAT loader
-        github_loader = GitHubMATLoader()
-
-        # Get MAT files from GitHub releases or fallback to local
-        mat_files = github_loader.get_mat_files(fallback_dir=results_dir, max_files=num_files)
-
-        # Clean up old cache files
-        github_loader.cleanup_cache()
-    except Exception as e:
-        print(f"GitHub loader failed, using local files: {e}")
-        # Fallback to local files only
-        mat_files = sorted(glob.glob(str(Path(results_dir) / "*.mat")))[-num_files:]
+    # EMERGENCY FIX: Use local files only - GitHub loader causing issues
+    print("DEBUG: Using local files only to fix loading issue")
+    mat_files = sorted(glob.glob(str(Path(results_dir) / "*.mat")))[-num_files:]
 
     if not mat_files:
         return None, None, None
