@@ -366,16 +366,25 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
             fig.add_trace(go.Scatter(
                 x=[t_target], y=[row['Tt_pred']],
                 mode='markers',
-                marker=dict(color='purple', size=8, symbol='diamond'),
+                marker=dict(color='purple', size=3, symbol='circle'),
                 name='pred 5h', showlegend=False
             ), row=1, col=1)
 
             fig.add_trace(go.Scatter(
                 x=[t_target], y=[row['Twk_pred']],
                 mode='markers',
-                marker=dict(color='purple', size=8, symbol='diamond'),
+                marker=dict(color='purple', size=3, symbol='circle'),
                 name='pred 5h', showlegend=False
             ), row=2, col=1)
+
+            # Add "pred 5h" text label (only once for clarity)
+            if idx == 0:  # Only add label for first point
+                fig.add_annotation(
+                    x=t_target, y=row['Tt_pred'] + 0.5,
+                    text="pred 5h", showarrow=False,
+                    font=dict(size=10, color='purple'),
+                    row=1, col=1
+                )
 
     # SUBPLOT 3: POWER
     if not past_df.empty:
