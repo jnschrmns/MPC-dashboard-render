@@ -593,7 +593,7 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
 app = dash.Dash(__name__)
 
 print("Loading data...")
-past_df, pred_df, pred_lead_df, weather_info, sample_time_min = load_mpc_data_exact_match("results", 15)
+past_df, pred_df, pred_lead_df, weather_info, sample_time_min = load_mpc_data_exact_match("results", 50)
 
 # Create initial figure
 if past_df is not None and not past_df.empty:
@@ -623,7 +623,7 @@ app.layout = html.Div([
 )
 def update_dashboard(n):
     try:
-        past_df, pred_df, pred_lead_df, weather_info, sample_time_min = load_mpc_data_exact_match("results", 30)
+        past_df, pred_df, pred_lead_df, weather_info, sample_time_min = load_mpc_data_exact_match("results", 50)
         if past_df is None or past_df.empty:
             empty_fig = go.Figure()
             empty_fig.add_annotation(text="No data", x=0.5, y=0.5, showarrow=False)
