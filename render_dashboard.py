@@ -16,7 +16,7 @@ from pathlib import Path
 import sys
 import os
 import yaml
-from github_mat_loader import GitHubMATLoader
+# from github_mat_loader import GitHubMATLoader
 
 def load_mpc_data_exact_match(results_dir="results", num_files=30):
     """Load data exactly like live_plot.py with weather information"""
@@ -38,7 +38,27 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
     mat_files = sorted(glob.glob(str(Path(results_dir) / "*.mat")))[-num_files:]
 
     if not mat_files:
-        return None, None, None
+        print("DEBUG: No MAT files found, creating dummy data for testing")
+        # Create minimal test data to prevent dashboard hang
+        now = datetime.now()
+        dummy_data = [{
+            'time': now - timedelta(hours=i),
+            'Tt_meas': 20.0 + i * 0.1,
+            'Twk_meas': 19.0 + i * 0.1,
+            'Ta_meas': 10.0,
+            'Ttsp_applied': 20.0,
+            'Twksp_applied': 19.0,
+            'Power_meas': 1.0,
+            'PV_meas': 0.5,
+            'DHW': False,
+            'override_warning': '',
+            'Price': 0.1,
+            'Tmin_t': 15.0,
+            'Tmin_w': 15.0
+        } for i in range(10)]
+
+        past_df = pd.DataFrame(dummy_data)
+        return past_df, None, None, None, 30
 
     # Load past data from multiple files
     past_data = []
@@ -216,9 +236,16 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
             return '🌙'       # Moon
 
     # Generate weather timeline
-    time_range = pd.date_range(start=past_df['time'].min(),
-                              end=past_df['time'].max() + timedelta(hours=24),
-                              freq='3H')
+    if not past_df.empty:
+        time_range = pd.date_range(start=past_df['time'].min(),
+                                  end=past_df['time'].max() + timedelta(hours=24),
+                                  freq='3H')
+    else:
+        # Fallback for empty data
+        now = datetime.now()
+        time_range = pd.date_range(start=now - timedelta(hours=15),
+                                  end=now + timedelta(hours=24),
+                                  freq='3H')
 
     weather_info = {
         'time': time_range,
