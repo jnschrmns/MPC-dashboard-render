@@ -206,12 +206,30 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
         pred_lead_df = pd.DataFrame(pred_lead_data)
         print(f"DEBUG: Created pred_lead_df with {len(pred_lead_df)} verification points")
 
-    # Create simple weather info (can be enhanced later)
+    # Create weather emoji timeline
+    def get_weather_emoji(hour):
+        """Simple weather emoji mapping based on time of day"""
+        if 6 <= hour <= 18:  # Daytime
+            if hour <= 8 or hour >= 17:
+                return '🌤️'  # Partly cloudy
+            elif hour <= 12:
+                return '☀️'   # Sunny
+            else:
+                return '⛅'   # Partly cloudy
+        else:  # Nighttime
+            return '🌙'       # Moon
+
+    # Generate weather timeline
+    time_range = pd.date_range(start=past_df['time'].min(),
+                              end=past_df['time'].max() + timedelta(hours=24),
+                              freq='3H')
+
     weather_info = {
+        'time': time_range,
+        'emoji': [get_weather_emoji(t.hour) for t in time_range],
         'temp': 20.0,
         'solar': 500,
-        'clouds': 25,
-        'emoji': 'SUN'
+        'clouds': 25
     }
 
     return past_df, pred_data, pred_lead_df, weather_info, sample_time_min_cfg
@@ -228,9 +246,9 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
             print(f"Warning: Could not load config.yaml: {e}")
             cfg = {}
 
-    # Get axis configuration from config
-    past_display_hours = cfg.get('plots', {}).get('past_display_hours', 15)
-    future_display_hours = cfg.get('plots', {}).get('future_display_hours', 24)
+    # Get axis configuration from config (correct path)
+    past_display_hours = cfg.get('mpc', {}).get('past_display_hours', 15)
+    future_display_hours = cfg.get('mpc', {}).get('future_display_hours', 24)
     if past_df is None or past_df.empty:
         fig = go.Figure()
         fig.add_annotation(text="No data available", x=0.5, y=0.5, showarrow=False)
@@ -439,6 +457,19 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
             fillcolor='cyan', opacity=0.25, row=3, col=1
         )
 
+    # Add weather emojis to timeline
+    if weather_info and 'time' in weather_info and 'emoji' in weather_info:
+        for time_point, emoji in zip(weather_info['time'], weather_info['emoji']):
+            # Add emoji annotations at top of each subplot
+            for row_num in [1, 2, 3]:
+                fig.add_annotation(
+                    x=time_point, y=1.02,
+                    xref='x', yref=f'y{row_num} domain',
+                    text=emoji, showarrow=False,
+                    font=dict(size=14),
+                    row=row_num, col=1
+                )
+
     # Check for override warnings and add warning display like live_plot.py
     override_warnings = []
     if past_df is not None and not past_df.empty:
@@ -456,6 +487,10 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
         autosize=True,
         margin=dict(l=80, r=50, t=80, b=80),
     )
+
+    # Remove excessive grid lines for clean appearance
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', griddash='solid')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray', griddash='solid')
 
     # Add override warning display if present - like live_plot.py
     if override_warnings:
