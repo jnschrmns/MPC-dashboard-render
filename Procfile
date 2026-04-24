@@ -1,1 +1,1 @@
-web: python simple_test.py
+web: python render_dashboard.py
