@@ -16,6 +16,7 @@ from pathlib import Path
 import sys
 import os
 import yaml
+from github_mat_loader import GitHubMATLoader
 
 def load_mpc_data_exact_match(results_dir="results", num_files=30):
     """Load data exactly like live_plot.py with weather information"""
@@ -32,9 +33,16 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
         hp_scale_factor = 1.0
         sample_time_min_cfg = 30
 
-    mat_files = sorted(glob.glob(str(Path(results_dir) / "*.mat")))
+    # Initialize GitHub MAT loader
+    github_loader = GitHubMATLoader()
+
+    # Get MAT files from GitHub releases or fallback to local
+    mat_files = github_loader.get_mat_files(fallback_dir=results_dir, max_files=num_files)
     if not mat_files:
         return None, None, None
+
+    # Clean up old cache files
+    github_loader.cleanup_cache()
 
     # Load past data from multiple files
     past_data = []
