@@ -1,1 +1,1 @@
-web: gunicorn simple_test:server
+web: python simple_test.py
