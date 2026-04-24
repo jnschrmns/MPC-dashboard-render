@@ -1,1 +1,1 @@
-web: gunicorn render_dashboard:server
+web: gunicorn simple_test:server
