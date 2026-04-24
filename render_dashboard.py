@@ -407,15 +407,15 @@ def create_exact_match_figure(past_df, pred_df, pred_lead_df=None, weather_info=
             fig.add_trace(go.Scatter(
                 x=[t_target], y=[row['Tt_pred']],
                 mode='markers',
-                marker=dict(color='purple', size=3, symbol='circle'),
-                name='pred 5h', showlegend=False
+                marker=dict(color='red', size=15, symbol='star'),
+                name='🔴 FIXED VERSION!', showlegend=True
             ), row=1, col=1)
 
             fig.add_trace(go.Scatter(
                 x=[t_target], y=[row['Twk_pred']],
                 mode='markers',
-                marker=dict(color='purple', size=3, symbol='circle'),
-                name='pred 5h', showlegend=False
+                marker=dict(color='red', size=15, symbol='star'),
+                name='🔴 FIXED VERSION!', showlegend=True
             ), row=2, col=1)
 
             # Add "pred 5h" text label (only once for clarity)
