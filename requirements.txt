@@ -1,4 +1,4 @@
-# Core dependencies for MPC heating controller
+# FORCE CLEAN REBUILD - Core dependencies for MPC heating controller
 numpy>=1.24
 scipy>=1.10
 pyyaml>=6.0

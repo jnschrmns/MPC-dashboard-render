@@ -239,13 +239,13 @@ def load_mpc_data_exact_match(results_dir="results", num_files=30):
     if not past_df.empty:
         time_range = pd.date_range(start=past_df['time'].min(),
                                   end=past_df['time'].max() + timedelta(hours=24),
-                                  freq='3H')
+                                  freq='3h')
     else:
         # Fallback for empty data
         now = datetime.now()
         time_range = pd.date_range(start=now - timedelta(hours=15),
                                   end=now + timedelta(hours=24),
-                                  freq='3H')
+                                  freq='3h')
 
     weather_info = {
         'time': time_range,
